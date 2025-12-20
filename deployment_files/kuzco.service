@@ -1,0 +1,15 @@
+File Location: "/etc/systemd/system/kuzco.service"
+[Unit]
+Description=Kuzco FastAPI Service
+After=network.target
+
+[Service]
+User=kronk
+Group=kronk
+WorkingDirectory=/home/kronk/workbench/kuzco
+# We use pipenv run to execute uvicorn within the virtual environment
+ExecStart=/usr/bin/pipenv run uvicorn backend.main:app --host 127.0.0.1 --port 8001 --workers 2
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuzco</title>
+    <style>
+        body { font-family: sans-serif; padding: 2rem; background: #f4f4f4; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        #status { font-weight: bold; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kuzco is running</h1>
+        <p>Backend Status: <span id="status">Checking...</span></p>
+    </div>
+
+    <script>
+        // Simple fetch to the API
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/health')
+                .then(response => response.json())
+                .then(data => {
+                    const statusSpan = document.getElementById('status');
+                    statusSpan.textContent = `${data.status} (v${data.version})`;
+                    statusSpan.style.color = 'green';
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    document.getElementById('status').textContent = 'Error connecting to API';
+                    document.getElementById('status').style.color = 'red';
+                });
+        });
+    </script>
+</body>
+</html>
