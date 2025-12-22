@@ -1,34 +1,31 @@
 :root {
-    /* The Palette. Look at these gorgeous colors. */
     --bg-color: #f8f9fa;
     --text-color: #2c3e50;
     --card-bg: #ffffff;
+    --kuzco-gold: #FFD700; /* EMPEROR GOLD */
+    --kuzco-red: #D32F2F;
     
-    /* Status Colors - The stars of the show */
-    --status-unavailable: #ff4d4d; /* Spicy Red */
-    --status-available: #4caf50;   /* Lush Green */
+    /* Status Colors */
+    --status-unavailable: #ff5252; 
+    --status-available: #43a047;   
     
     /* Heatmap Spectrum */
-    --heat-low: #ff80ab;    /* Pink (1 person) */
-    --heat-mid: #ffeb3b;    /* Lemon Yellow (2 people) */
-    --heat-high: #00e676;   /* Neon Green (3 people/Full Squad) */
+    --heat-low: #f48fb1;    
+    --heat-mid: #ffd740;    
+    --heat-high: #69f0ae;   
 
-    /* Layout */
     --gap: 8px;
     --radius: 12px;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
-    padding-bottom: 40px; /* Space for the thumb scrolling */
+    padding-bottom: 40px;
+    /* Subtle llama texture or pattern could go here */
 }
 
 /* Header Chic */
@@ -38,7 +35,28 @@ body {
     align-items: center;
     padding: 1rem;
     background: var(--card-bg);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-bottom: 4px solid var(--kuzco-gold); /* Gold border! */
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#app-title {
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--kuzco-red);
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid var(--kuzco-gold);
+    object-fit: cover;
 }
 
 .user-badge {
@@ -56,17 +74,23 @@ body {
 }
 
 .nav-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
+    background: white;
+    border: 2px solid #eee;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
     cursor: pointer;
-    padding: 0.5rem;
     color: var(--text-color);
+    transition: transform 0.2s;
 }
+.nav-btn:active { transform: scale(0.9); }
 
 #current-month-display {
     font-size: 1.2rem;
-    font-weight: 600;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Tabs */
@@ -90,14 +114,14 @@ body {
 
 .tab-btn.active {
     background: var(--text-color);
-    color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    color: var(--kuzco-gold); /* Gold text on active */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 /* The Grid System */
 .calendar-wrapper {
     padding: 0 1rem;
-    max-width: 600px; /* Don't let it get too wide on desktop */
+    max-width: 600px;
     margin: 0 auto;
 }
 
@@ -105,8 +129,10 @@ body {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     text-align: center;
-    font-size: 0.8rem;
-    color: #888;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #aaa;
     margin-bottom: 0.5rem;
 }
 
@@ -116,52 +142,64 @@ body {
     gap: var(--gap);
 }
 
-/* The Day Cell - The Masterpiece */
+/* The Day Cell */
 .day-cell {
-    aspect-ratio: 1 / 1; /* Perfect squares, darling */
+    aspect-ratio: 1 / 1;
     border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.1s, filter 0.2s;
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     user-select: none;
-    position: relative;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: relative;
 }
 
-.day-cell:active {
-    transform: scale(0.95);
-}
-
-.day-cell.empty {
-    background: transparent;
-    box-shadow: none;
-    cursor: default;
-}
+.day-cell:active { transform: scale(0.9); }
+.day-cell.empty { background: transparent; box-shadow: none; cursor: default; }
 
 /* States */
-.day-cell.unavailable {
-    background-color: var(--status-unavailable);
-    color: white;
-}
-
-.day-cell.available {
-    background-color: var(--status-available);
-    color: white;
+.day-cell.unavailable { background-color: white; border: 2px solid #eee; color: #ddd; }
+.day-cell.available { 
+    background-color: var(--status-available); 
+    color: white; 
+    border: 2px solid var(--status-available);
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
 }
 
 /* Heatmap States */
-.day-cell.heat-0 { background-color: var(--status-unavailable); color: white; opacity: 0.8; }
-.day-cell.heat-1 { background-color: var(--heat-low); color: white; }
-.day-cell.heat-2 { background-color: var(--heat-mid); color: #333; }
-.day-cell.heat-3 { background-color: var(--heat-high); color: #333; }
+.day-cell.heat-0 { background-color: white; border: 2px solid #eee; color: #ddd; }
+.day-cell.heat-1 { background-color: var(--heat-low); color: white; border: none; }
+.day-cell.heat-2 { background-color: var(--heat-mid); color: #333; border: none; }
+.day-cell.heat-3 { 
+    background-color: var(--heat-high); 
+    color: #333; 
+    border: 2px solid var(--kuzco-gold); /* Gold border for full squad */
+    font-weight: 800;
+}
+
+/* Quote Box */
+.quote-box {
+    margin: 2rem auto;
+    max-width: 500px;
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    border-left: 5px solid var(--kuzco-red);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.quote-text { font-style: italic; margin-bottom: 0.5rem; color: #555; }
+small { font-weight: 800; color: var(--kuzco-gold); text-transform: uppercase; }
 
 /* Loader */
-.loader {
-    text-align: center;
-    padding: 2rem;
-    color: #888;
+.loader { text-align: center; padding: 2rem; color: #888; }
+.spinner { font-size: 3rem; animation: spin 2s infinite linear; display: inline-block; margin-bottom: 1rem; }
+@keyframes spin { 
+    0% { transform: rotate(0deg); } 
+    50% { transform: rotate(20deg); } 
+    100% { transform: rotate(0deg); } 
 }
 .hidden { display: none; }

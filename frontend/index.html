@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kuzco</title>
+    <title>Kuzco's Groove</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Google Fonts because we aren't heathens -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦙</text></svg>">
 </head>
 <body>
 
     <header class="app-header">
-        <h1 id="app-title">Kuzco</h1>
+        <div class="header-left">
+            <!-- Placeholder for Kuzco's beautiful face -->
+            <img src="img/kuzco-face.png" alt="Kuzco" class="avatar" onerror="this.src='https://placehold.co/60x60/gold/black?text=K'">
+            <h1 id="app-title">Kuzco</h1>
+        </div>
         <div class="user-badge" id="user-badge">Loading...</div>
     </header>
 
@@ -22,27 +26,34 @@
         <button id="next-month" class="nav-btn" aria-label="Next Month">&gt;</button>
     </div>
 
-    <!-- The Tabs. Simple. Chic. -->
+    <!-- The Tabs -->
     <div class="tabs">
-        <button class="tab-btn active" data-tab="personal">Me</button>
+        <button class="tab-btn active" data-tab="personal">My Groove</button>
         <button class="tab-btn" data-tab="group">The Squad</button>
     </div>
 
-    <!-- The Main Stage -->
     <main>
         <!-- The Calendar Grid -->
-        <!-- We reuse this grid for both tabs, we just repaint it like a chameleon -->
         <div class="calendar-wrapper">
             <div class="weekdays">
                 <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
             </div>
             <div id="calendar-grid" class="calendar-grid">
-                <!-- Days are injected here by my brilliant JS -->
+                <!-- Days injected via JS -->
             </div>
         </div>
 
-        <!-- Loading Overlay (hidden by default) -->
-        <div id="loader" class="loader hidden">Thinking...</div>
+        <!-- The Wisdom of the Emperor -->
+        <div class="quote-box">
+            <p id="kuzco-quote" class="quote-text">"Boom, baby!"</p>
+            <small>- Emperor Kuzco</small>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loader" class="loader hidden">
+            <div class="spinner">🦙</div>
+            <p>Constructing summer home...</p>
+        </div>
     </main>
 
     <script src="js/app.js"></script>
