@@ -22,10 +22,15 @@ class AvailabilityBase(BaseModel):
     date: date
 
 class AvailabilityCreate(AvailabilityBase):
-    available: bool # Used for the toggle logic in the API
+    available: bool # True = Create record, False = Delete record
 
 class AvailabilityRead(AvailabilityBase):
     user_id: int
 
     class Config:
         from_attributes = True
+
+class AvailabilityAggregate(BaseModel):
+    date: date
+    count: int
+    total_active_users: int
