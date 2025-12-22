@@ -4,35 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuzco</title>
-    <style>
-        body { font-family: sans-serif; padding: 2rem; background: #f4f4f4; }
-        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        #status { font-weight: bold; color: #666; }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts because we aren't heathens -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Kuzco is running</h1>
-        <p>Backend Status: <span id="status">Checking...</span></p>
+
+    <header class="app-header">
+        <h1 id="app-title">Kuzco</h1>
+        <div class="user-badge" id="user-badge">Loading...</div>
+    </header>
+
+    <!-- Month Navigation -->
+    <div class="month-nav">
+        <button id="prev-month" class="nav-btn" aria-label="Previous Month">&lt;</button>
+        <h2 id="current-month-display">...</h2>
+        <button id="next-month" class="nav-btn" aria-label="Next Month">&gt;</button>
     </div>
 
-    <script>
-        // Simple fetch to the API
-        document.addEventListener('DOMContentLoaded', () => {
-            fetch('/api/health')
-                .then(response => response.json())
-                .then(data => {
-                    const statusSpan = document.getElementById('status');
-                    statusSpan.textContent = `${data.status} (v${data.version})`;
-                    statusSpan.style.color = 'green';
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    document.getElementById('status').textContent = 'Error connecting to API';
-                    document.getElementById('status').style.color = 'red';
-                });
-        });
-    </script>
+    <!-- The Tabs. Simple. Chic. -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="personal">Me</button>
+        <button class="tab-btn" data-tab="group">The Squad</button>
+    </div>
+
+    <!-- The Main Stage -->
+    <main>
+        <!-- The Calendar Grid -->
+        <!-- We reuse this grid for both tabs, we just repaint it like a chameleon -->
+        <div class="calendar-wrapper">
+            <div class="weekdays">
+                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+            </div>
+            <div id="calendar-grid" class="calendar-grid">
+                <!-- Days are injected here by my brilliant JS -->
+            </div>
+        </div>
+
+        <!-- Loading Overlay (hidden by default) -->
+        <div id="loader" class="loader hidden">Thinking...</div>
+    </main>
+
+    <script src="js/app.js"></script>
 </body>
 </html>

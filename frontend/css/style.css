@@ -1,0 +1,167 @@
+:root {
+    /* The Palette. Look at these gorgeous colors. */
+    --bg-color: #f8f9fa;
+    --text-color: #2c3e50;
+    --card-bg: #ffffff;
+    
+    /* Status Colors - The stars of the show */
+    --status-unavailable: #ff4d4d; /* Spicy Red */
+    --status-available: #4caf50;   /* Lush Green */
+    
+    /* Heatmap Spectrum */
+    --heat-low: #ff80ab;    /* Pink (1 person) */
+    --heat-mid: #ffeb3b;    /* Lemon Yellow (2 people) */
+    --heat-high: #00e676;   /* Neon Green (3 people/Full Squad) */
+
+    /* Layout */
+    --gap: 8px;
+    --radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding-bottom: 40px; /* Space for the thumb scrolling */
+}
+
+/* Header Chic */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.user-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #888;
+}
+
+/* Navigation & Controls */
+.month-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1rem;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--text-color);
+}
+
+#current-month-display {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+    background: transparent;
+    border: 2px solid transparent;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    font-weight: 600;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+    background: var(--text-color);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* The Grid System */
+.calendar-wrapper {
+    padding: 0 1rem;
+    max-width: 600px; /* Don't let it get too wide on desktop */
+    margin: 0 auto;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--gap);
+}
+
+/* The Day Cell - The Masterpiece */
+.day-cell {
+    aspect-ratio: 1 / 1; /* Perfect squares, darling */
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, filter 0.2s;
+    user-select: none;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.day-cell:active {
+    transform: scale(0.95);
+}
+
+.day-cell.empty {
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
+}
+
+/* States */
+.day-cell.unavailable {
+    background-color: var(--status-unavailable);
+    color: white;
+}
+
+.day-cell.available {
+    background-color: var(--status-available);
+    color: white;
+}
+
+/* Heatmap States */
+.day-cell.heat-0 { background-color: var(--status-unavailable); color: white; opacity: 0.8; }
+.day-cell.heat-1 { background-color: var(--heat-low); color: white; }
+.day-cell.heat-2 { background-color: var(--heat-mid); color: #333; }
+.day-cell.heat-3 { background-color: var(--heat-high); color: #333; }
+
+/* Loader */
+.loader {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+}
+.hidden { display: none; }
