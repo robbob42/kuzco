@@ -7,12 +7,10 @@ def seed():
     Base.metadata.create_all(bind=engine)
 
     # 2. Define Initial Users
-    # MODIFY THESE EMAILS to match your real Cloudflare emails
     initial_users = [
         {"email": "robbob42@gmail.com", "display_name": "Rob", "is_active": True},
         {"email": "shane.tory@gmail.com", "display_name": "Shane", "is_active": True},
-        {"email": "mike.nelson9@gmail.com", "display_name": "Mike", "is_active": True},
-        {"email": "kronk@dev.local", "display_name": "Kronk (Dev)", "is_active": True},
+        {"email": "mike.nelson9@gmail.com", "display_name": "Mike", "is_active": True}
     ]
 
     db = SessionLocal()
@@ -26,7 +24,7 @@ def seed():
             db.add(new_user)
         else:
             print(f"  . Exists: {user_data['display_name']}")
-    
+
     db.commit()
     db.close()
     print("Seeding complete.")
