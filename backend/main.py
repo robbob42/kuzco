@@ -1,10 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from backend import models, database, auth, schemas
 
-app = FastAPI(title="Kuzco", version="0.1.0")
+# Initialize DB Tables on startup (ensure they exist)
+models.Base.metadata.create_all(bind=database.engine)
 
-# Allow CORS (adjust origins in production if necessary)
+app = FastAPI(title="Kuzco", version="0.2.0")
+
+# CORS Setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,22 +16,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class HealthResponse(BaseModel):
-    status: str
-    version: str
-
-@app.get("/api/health", response_model=HealthResponse)
+@app.get("/api/health")
 async def health_check():
-    """
-    Simple health check endpoint to verify backend is running.
-    """
-    return HealthResponse(status="ok", version="0.1.0")
+    return {"status": "ok", "version": "0.2.0"}
 
-@app.get("/")
-async def root():
+# Protected Route Example
+@app.get("/api/users/me", response_model=schemas.UserRead)
+async def read_users_me(current_user: models.User = Depends(auth.get_current_user)):
     """
-    Redirect root to docs or return a message. 
-    Since Nginx handles the frontend, this might only be hit 
-    if accessing port 8001 directly.
+    Returns the currently authenticated user.
+    In Dev: Returns Kronk (Dev)
+    In Prod: Returns Cloudflare User
     """
-    return {"message": "Kuzco API is running. Access via Nginx for frontend."}
+    return current_user
