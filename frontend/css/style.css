@@ -49,6 +49,7 @@ body {
     font-weight: 800;
     letter-spacing: -1px;
     color: var(--kuzco-red);
+    cursor: pointer;
 }
 
 .avatar {
@@ -154,7 +155,7 @@ body {
     transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     user-select: none;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    position: relative;
+    position: relative; /* Essential for the initials positioning */
 }
 
 .day-cell:active { transform: scale(0.9); }
@@ -178,6 +179,29 @@ body {
     color: #333; 
     border: 2px solid var(--kuzco-gold); /* Gold border for full squad */
     font-weight: 800;
+}
+
+/* The Initials - The New Fashion */
+.initials-container {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    pointer-events: none; /* Let clicks pass through */
+}
+
+.user-initial {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: rgba(0,0,0,0.6);
+    text-transform: uppercase;
+    /* Optional: background circle */
+    /* background: rgba(255,255,255,0.4); 
+       border-radius: 50%; width: 12px; height: 12px; 
+       display:flex; align-items:center; justify-content:center; */
 }
 
 /* Quote Box */

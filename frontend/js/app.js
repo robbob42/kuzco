@@ -64,7 +64,6 @@ async function fetchWithAuth(endpoint, options = {}) {
         return await response.json();
     } catch (err) {
         console.error("Ugh, network error:", err);
-        // If the network fails, we drop the poison quote. Obviously.
         setQuote(THE_POISON_QUOTE, "Kronk");
         return null;
     }
@@ -74,17 +73,14 @@ async function fetchWithAuth(endpoint, options = {}) {
  * 2. INITIALIZATION
  */
 async function init() {
-    // Drop a random quote
     displayRandomQuote();
 
-    // Who are we?
     const user = await fetchWithAuth('/users/me');
     if (user) {
         STATE.currentUser = user;
         DOM.userBadge.textContent = `Hi, ${user.display_name}`;
     }
 
-    // Attach Event Listeners
     DOM.prevBtn.addEventListener('click', () => changeMonth(-1));
     DOM.nextBtn.addEventListener('click', () => changeMonth(1));
     
@@ -92,7 +88,6 @@ async function init() {
         btn.addEventListener('click', (e) => switchTab(e.target.dataset.tab));
     });
 
-    // Easter Egg: Click the title to see the Poison Quote
     document.getElementById('app-title').addEventListener('click', () => {
         setQuote(THE_POISON_QUOTE, "Kronk");
     });
@@ -101,9 +96,6 @@ async function init() {
     await loadDataAndRender();
 }
 
-/**
- * Helper: Quote Randomizer
- */
 function displayRandomQuote() {
     const randomIndex = Math.floor(Math.random() * KUZCO_QUOTES.length);
     setQuote(KUZCO_QUOTES[randomIndex], "Emperor Kuzco");
@@ -197,7 +189,6 @@ function renderPersonalDay(cell, dateStr) {
     const isInitiallyAvailable = STATE.availabilityCache.includes(dateStr);
     cell.className = `day-cell ${isInitiallyAvailable ? 'available' : 'unavailable'}`;
     
-    // Click Handler (Closure fixed)
     cell.addEventListener('click', () => {
         const isCurrentlyAvailable = STATE.availabilityCache.includes(dateStr);
         toggleAvailability(cell, dateStr, !isCurrentlyAvailable);
@@ -211,22 +202,43 @@ function renderAggregateDay(cell, dateStr) {
     const dayData = STATE.aggregateCache.find(item => item.date === dateStr);
     let heatClass = 'heat-0'; 
 
+    // We need to keep a reference to available users
+    let availableUsers = [];
+
     if (dayData) {
         const count = dayData.count;
         const total = dayData.total_active_users;
+        availableUsers = dayData.available_users || [];
 
         if (count === total) heatClass = 'heat-3';      
         else if (count >= 2) heatClass = 'heat-2';      
         else if (count > 0)  heatClass = 'heat-1';      
     }
     cell.className = `day-cell ${heatClass}`;
+
+    // ADDED: The Initials Logic
+    // Only show initials if:
+    // 1. Someone is free (heat-1 or heat-2)
+    // 2. Not EVERYONE is free (heat-3 is already green, no need to clutter it)
+    if ((heatClass === 'heat-1' || heatClass === 'heat-2') && availableUsers.length > 0) {
+        const container = document.createElement('div');
+        container.className = 'initials-container';
+        
+        availableUsers.forEach(name => {
+            const span = document.createElement('span');
+            span.className = 'user-initial';
+            span.textContent = name.charAt(0); // First letter only
+            container.appendChild(span);
+        });
+        
+        cell.appendChild(container);
+    }
 }
 
 /**
  * 6. INTERACTION
  */
 async function toggleAvailability(cell, dateStr, newStatus) {
-    // 1. Optimistic UI
     if (newStatus) {
         cell.classList.replace('unavailable', 'available');
         if (!STATE.availabilityCache.includes(dateStr)) STATE.availabilityCache.push(dateStr);
@@ -235,13 +247,11 @@ async function toggleAvailability(cell, dateStr, newStatus) {
         STATE.availabilityCache = STATE.availabilityCache.filter(d => d !== dateStr);
     }
 
-    // 2. Background API Call
     const result = await fetchWithAuth('/availability', {
         method: 'POST',
         body: JSON.stringify({ date: dateStr, available: newStatus })
     });
 
-    // 3. Error Handling
     if (!result || result.status === 'error') {
         console.error("Server rejected the vibe check.");
         const revertStatus = !newStatus;

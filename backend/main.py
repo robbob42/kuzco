@@ -9,7 +9,7 @@ from backend import models, database, auth, schemas
 # Initialize DB Tables on startup
 models.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI(title="Kuzco", version="0.3.0")
+app = FastAPI(title="Kuzco", version="0.4.0")
 
 # CORS Setup
 app.add_middleware(
@@ -23,7 +23,7 @@ app.add_middleware(
 # --- Utilities ---
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ok", "version": "0.3.0"}
+    return {"status": "ok", "version": "0.4.0"}
 
 # --- User Endpoints ---
 @app.get("/api/users/me", response_model=schemas.UserRead)
@@ -42,13 +42,11 @@ async def get_my_availability(
 ):
     """
     Returns a list of dates where the current user is marked available.
-    Used to populate the 'Personal' tab.
     """
     results = db.query(models.Availability.date)\
         .filter(models.Availability.user_id == current_user.id)\
         .all()
     
-    # Extract just the date objects from the row tuples
     return [r.date for r in results]
 
 @app.post("/api/availability")
@@ -85,28 +83,36 @@ async def get_aggregate_availability(
     db: Session = Depends(database.get_db)
 ):
     """
-    Returns the 'Heatmap' data.
+    Returns the 'Heatmap' data with user names.
     - Only counts Active users.
-    - Returns [ {date, count, total_active_users}, ... ]
+    - Returns [ {date, count, total_active_users, available_users}, ... ]
     """
     # 1. Get Total Active Users
     total_active = db.query(models.User).filter(models.User.is_active == True).count()
 
-    # 2. Aggregation Query
-    # SELECT date, COUNT(user_id) FROM availability JOIN users ... GROUP BY date
-    results = db.query(
-        models.Availability.date, 
-        func.count(models.Availability.user_id).label("count")
-    ).join(models.User)\
-    .filter(models.User.is_active == True)\
-    .group_by(models.Availability.date)\
-    .all()
+    # 2. Fetch raw data: Date + Display Name
+    # We join availability with users to get the names
+    raw_results = db.query(models.Availability.date, models.User.display_name)\
+        .join(models.User)\
+        .filter(models.User.is_active == True)\
+        .all()
 
-    return [
-        schemas.AvailabilityAggregate(
-            date=r.date,
-            count=r.count,
-            total_active_users=total_active
-        )
-        for r in results
-    ]
+    # 3. Process in Python (Group by Date)
+    # Structure: { date_obj: ["Rob", "Shane"], ... }
+    agg_map = {}
+    for r in raw_results:
+        if r.date not in agg_map:
+            agg_map[r.date] = []
+        agg_map[r.date].append(r.display_name)
+
+    # 4. Build Response List
+    response = []
+    for date_key, names in agg_map.items():
+        response.append(schemas.AvailabilityAggregate(
+            date=date_key,
+            count=len(names),
+            total_active_users=total_active,
+            available_users=names
+        ))
+
+    return response

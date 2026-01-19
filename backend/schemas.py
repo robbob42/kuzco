@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import date
 
 # --- User Schemas ---
@@ -34,3 +34,4 @@ class AvailabilityAggregate(BaseModel):
     date: date
     count: int
     total_active_users: int
+    available_users: List[str] # Added list of names
